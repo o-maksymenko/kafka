@@ -1,6 +1,6 @@
 package com.example.kafka.rest;
 
-import com.example.kafka.kafka.KafkaProducer;
+import com.example.kafka.kafka.producer.KafkaProducer;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;

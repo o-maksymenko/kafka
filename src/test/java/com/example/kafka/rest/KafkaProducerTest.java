@@ -1,8 +1,6 @@
 package com.example.kafka.rest;
 
-import com.example.kafka.kafka.KafkaProducerImpl;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import com.example.kafka.kafka.producer.KafkaProducerImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

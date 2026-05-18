@@ -10,7 +10,10 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.listener.CommonErrorHandler;
+import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.serializer.JacksonJsonDeserializer;
+import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,10 +40,27 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
+    public CommonErrorHandler errorHandler() {
+        // Retry the batch up to 3 times with a 1-second interval
+        FixedBackOff backOff = new FixedBackOff(1000L, 3);
+        DefaultErrorHandler errorHandler = new DefaultErrorHandler(backOff);
+
+        errorHandler.setRetryListeners((record, ex, deliveryAttempt) ->
+            System.err.printf("Retry attempt %d for record %s due to %s%n",
+                    deliveryAttempt, record, ex.getMessage())
+        );
+
+        return errorHandler;
+    }
+
+    @Bean
     public ConcurrentKafkaListenerContainerFactory<String, MyMessage> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, MyMessage> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
+        factory.setBatchListener(true);
+        factory.setCommonErrorHandler(errorHandler());
+
         return factory;
     }
 }

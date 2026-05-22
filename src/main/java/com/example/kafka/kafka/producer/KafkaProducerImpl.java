@@ -1,7 +1,7 @@
 package com.example.kafka.kafka.producer;
 
 import com.example.kafka.model.MyMessage;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.CompletableFuture;
 
 @Component
-@RequiredArgsConstructor
 public class KafkaProducerImpl implements KafkaProducer {
-    private final KafkaTemplate<String, MyMessage> kafkaTemplate;
+    @Autowired
+    private KafkaTemplate<String, MyMessage> kafkaTemplate;
 
     @Value(value = "${spring.kafka.topic}")
     private String kafkaTopic;
